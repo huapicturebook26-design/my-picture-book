@@ -21,8 +21,8 @@ export default async function handler(req, res) {
 "Claude Monet style impressionist oil painting, visible brushstrokes, vibrant sunlight, soft pastel colors, dreamy background, children's storybook illustration."
 請只回傳最終的英文 Prompt 文字，不要加任何其他標點或解釋。`;
 
-        // 使用通用穩定的 gemini-2.5-flash
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // 使用通用穩定的 gemini-flash
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash:generateContent?key=${GEMINI_API_KEY}`;
         const geminiRes = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
