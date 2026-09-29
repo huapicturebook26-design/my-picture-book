@@ -21,8 +21,8 @@ export default async function handler(req, res) {
 "Claude Monet style impressionist oil painting, visible brushstrokes, vibrant sunlight, soft pastel colors, dreamy background, children's storybook illustration."
 請只回傳最終的英文 Prompt 文字，不要加任何其他標點或解釋。`;
 
-        // 1. 呼叫 Gemini (使用 gemini-1.5-flash 最新穩定格式)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // 改用 v1 正式版 API 端點，解決 404 NOT_FOUND 問題
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
         const geminiRes = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -35,13 +35,13 @@ export default async function handler(req, res) {
         
         if (!geminiRes.ok || !geminiData.candidates || !geminiData.candidates[0]?.content?.parts?.[0]?.text) {
             console.error("Gemini 詳細錯誤:", JSON.stringify(geminiData));
-            return res.status(500).json({ error: "Gemini API 解析失敗，請檢查 Key 權限", raw: geminiData });
+            return res.status(500).json({ error: "Gemini API 解析失敗", raw: geminiData });
         }
 
         const finalPrompt = geminiData.candidates[0].content.parts[0].text.trim();
         console.log("生成的 Prompt:", finalPrompt);
 
-        // 2. 呼叫 Fal.ai 生圖
+        // 呼叫 Fal.ai 生圖
         const falRes = await fetch("https://fal.run/fal-ai/flux/schnell", {
             method: "POST",
             headers: {
