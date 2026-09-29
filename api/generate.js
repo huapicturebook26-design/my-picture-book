@@ -16,10 +16,10 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 1. 轉換 Prompt (改用最新標準模型 gemini-2.5-flash)
+        // 1. 轉換 Prompt (依 Google 官方提示改用 gemini-3.8-flash)
         const promptText = `你是一個印象派繪本 Prompt 轉換器。請將使用者輸入的中文：「${text}」轉換成英文 Prompt，風格為：Claude Monet style impressionist oil painting, visible brushstrokes, vibrant sunlight, soft pastel colors, dreamy background, children's storybook illustration. 請只回傳最終英文文字。`;
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${GEMINI_API_KEY}`;
         const geminiRes = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
         if (!geminiRes.ok) {
             console.error("Gemini API Error:", geminiData);
-            return res.status(500).json({ error: `Gemini API 錯誤: ${geminiData.error?.message || '模型名稱不正確'}` });
+            return res.status(500).json({ error: `Gemini API 錯誤: ${geminiData.error?.message || '模型呼叫失敗'}` });
         }
 
         const finalPrompt = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Claude Monet style impressionist oil painting, storybook illustration";
